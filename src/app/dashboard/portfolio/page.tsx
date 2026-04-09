@@ -25,13 +25,38 @@ interface Profile {
   full_name: string | null;
   brokerage: string | null;
   slug: string | null;
-  phone: string | null;
+}
+
+interface Listing {
+  id: string;
+  property_type: string;
+  address: string;
+  city: string;
+  neighborhood: string | null;
+  currency: string | null;
+  price: string | number | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  area: number | null;
+  area_unit: string | null;
+  status: string | null;
+}
+
+function formatPrice(currency: string | null, price: string | number | null): string {
+  if (price == null || price === "") return "—";
+  const num = typeof price === "number" ? price : parseFloat(String(price).replace(/,/g, ""));
+  if (isNaN(num)) return String(price);
+  return `${currency ?? ""} ${num.toLocaleString("en-US")}`.trim();
+}
+
+function propertyTypeShort(type: string): string {
+  return type.replace("Residential — ", "").replace("Commercial — ", "").replace("Multifamily — ", "");
 }
 
 export default function PortfolioDashboardPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [listingCount, setListingCount] = useState<number>(0);
+  const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -40,13 +65,17 @@ export default function PortfolioDashboardPage() {
     supabase.auth.getUser().then(async ({ data: { user }, error }) => {
       if (error || !user) { router.replace("/login"); return; }
 
-      const [{ data: profileData }, { count }] = await Promise.all([
-        supabase.from("profiles").select("full_name, brokerage, slug, phone").eq("id", user.id).maybeSingle(),
-        supabase.from("listings").select("id", { count: "exact", head: true }).eq("user_id", user.id).or("status.eq.Active,status.is.null"),
+      const [{ data: profileData }, { data: listingsData }] = await Promise.all([
+        supabase.from("profiles").select("full_name, brokerage, slug").eq("id", user.id).maybeSingle(),
+        supabase.from("listings")
+          .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status")
+          .eq("user_id", user.id)
+          .or("status.eq.Active,status.is.null")
+          .order("created_at", { ascending: false }),
       ]);
 
       setProfile(profileData ?? null);
-      setListingCount(count ?? 0);
+      setListings(listingsData ?? []);
       setLoading(false);
     });
   }, [router]);
@@ -57,13 +86,6 @@ export default function PortfolioDashboardPage() {
   };
 
   const portfolioUrl = profile?.slug ? `https://listora.studio/${profile.slug}` : null;
-
-  const handleCopy = () => {
-    if (!portfolioUrl) return;
-    navigator.clipboard.writeText(portfolioUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   if (loading) {
     return (
@@ -111,91 +133,109 @@ export default function PortfolioDashboardPage() {
       </aside>
 
       {/* Main */}
-      <main style={{ flex: 1, padding: "48px 52px", maxWidth: "800px" }}>
+      <main style={{ flex: 1, padding: "48px 52px", maxWidth: "1000px" }}>
 
         {/* Header */}
-        <div style={{ marginBottom: "48px" }}>
-          <p style={{ fontSize: "12px", color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>Portfolio</p>
-          <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "42px", fontWeight: 400, letterSpacing: "-0.02em", color: WARM_WHITE, margin: 0 }}>
-            Your public page.
-          </h1>
-        </div>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "48px", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <p style={{ fontSize: "12px", color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>Portfolio</p>
+            <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "42px", fontWeight: 400, letterSpacing: "-0.02em", color: WARM_WHITE, margin: 0 }}>
+              Your public page.
+            </h1>
+          </div>
 
-        {/* Portfolio URL card */}
-        <div style={{ background: SURFACE, border: `1px solid ${GOLD_BORDER}`, borderRadius: "16px", padding: "36px", marginBottom: "24px", position: "relative", overflow: "hidden" }}>
-          <div aria-hidden style={{ position: "absolute", top: "-40px", right: "-40px", width: "200px", height: "200px", borderRadius: "50%", background: GOLD, opacity: 0.04, filter: "blur(60px)", pointerEvents: "none" }} />
-
-          <p style={{ fontSize: "12px", color: GOLD, letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 16px" }}>Your portfolio URL</p>
-
-          {portfolioUrl ? (
-            <>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", flexWrap: "wrap" }}>
-                <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "26px", color: WARM_WHITE, letterSpacing: "-0.01em" }}>
-                  listora.studio/{profile!.slug}
-                </span>
-              </div>
-
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                <button
-                  onClick={handleCopy}
-                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: GOLD, color: BG, fontSize: "13px", fontWeight: 600, padding: "11px 22px", borderRadius: "100px", border: "none", cursor: "pointer", fontFamily: "var(--font-dm-sans)", transition: "opacity 0.2s" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  {copied ? "✓ Copied!" : "⊡ Copy link"}
-                </button>
-
-                <a
-                  href={portfolioUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "11px 22px", borderRadius: "100px", border: `1px solid ${BORDER}`, color: MUTED, fontSize: "13px", textDecoration: "none", background: "transparent", transition: "color 0.15s, border-color 0.15s" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = WARM_WHITE; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = MUTED; e.currentTarget.style.borderColor = BORDER; }}
-                >
-                  ↗ Preview
-                </a>
-              </div>
-            </>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <p style={{ fontSize: "15px", color: MUTED, margin: 0 }}>You haven't set a portfolio URL yet.</p>
-              <Link href="/dashboard/settings" style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: GOLD, color: BG, fontSize: "13px", fontWeight: 600, padding: "11px 22px", borderRadius: "100px", textDecoration: "none", width: "fit-content" }}>
-                Set it up →
-              </Link>
+          {/* URL bar */}
+          {portfolioUrl && (
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", background: SURFACE, border: `1px solid ${GOLD_BORDER}`, borderRadius: "100px", padding: "10px 10px 10px 20px", marginTop: "8px" }}>
+              <span style={{ fontSize: "13px", color: GOLD, whiteSpace: "nowrap" }}>
+                listora.studio/{profile!.slug}
+              </span>
+              <button
+                onClick={() => { navigator.clipboard.writeText(portfolioUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                style={{ padding: "7px 14px", borderRadius: "100px", background: copied ? "rgba(106,191,106,0.15)" : GOLD, border: "none", color: copied ? "#6ABF6A" : BG, fontSize: "12px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans)", transition: "all 0.2s", whiteSpace: "nowrap" }}
+              >
+                {copied ? "✓ Copied" : "Copy"}
+              </button>
+              <a
+                href={portfolioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ padding: "7px 14px", borderRadius: "100px", background: "transparent", border: `1px solid ${BORDER}`, color: MUTED, fontSize: "12px", textDecoration: "none", fontFamily: "var(--font-dm-sans)", whiteSpace: "nowrap", transition: "color 0.2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = WARM_WHITE)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = MUTED)}
+              >
+                ↗ Preview
+              </a>
             </div>
           )}
         </div>
 
-        {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px", marginBottom: "24px" }}>
-          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "28px" }}>
-            <p style={{ fontSize: "12px", color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px" }}>Active listings</p>
-            <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "42px", fontWeight: 400, color: WARM_WHITE, margin: 0 }}>{listingCount}</p>
-          </div>
-          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "28px" }}>
-            <p style={{ fontSize: "12px", color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px" }}>Showing on portfolio</p>
-            <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "42px", fontWeight: 400, color: WARM_WHITE, margin: 0 }}>{listingCount}</p>
-          </div>
+        {/* Info bar */}
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "16px 20px", marginBottom: "32px", display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "13px", color: MUTED }}>
+            Your portfolio shows all your <span style={{ color: WARM_WHITE }}>Active</span> listings automatically. To add more, go to{" "}
+            <Link href="/dashboard/listings" style={{ color: GOLD, textDecoration: "none" }}>My Listings</Link> and create one.
+          </span>
         </div>
 
-        {/* Quick actions */}
-        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
-          <div>
-            <p style={{ fontSize: "15px", color: WARM_WHITE, fontWeight: 500, margin: "0 0 4px" }}>Add a listing to your portfolio</p>
-            <p style={{ fontSize: "13px", color: MUTED, margin: 0 }}>Active listings appear automatically on your public page.</p>
+        {/* Listings */}
+        {listings.length === 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "300px", gap: "20px", textAlign: "center" }}>
+            <div style={{ width: "64px", height: "64px", borderRadius: "16px", background: "rgba(200,169,110,0.06)", border: `1px solid ${GOLD_BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>
+              ⊡
+            </div>
+            <div>
+              <p style={{ fontSize: "18px", color: WARM_WHITE, fontWeight: 500, margin: "0 0 8px" }}>No active listings yet</p>
+              <p style={{ fontSize: "14px", color: MUTED, margin: 0 }}>Create a listing and it will appear here and on your public portfolio.</p>
+            </div>
+            <Link href="/dashboard/listings/new" style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: GOLD, color: BG, fontSize: "14px", fontWeight: 600, padding: "12px 28px", borderRadius: "100px", textDecoration: "none" }}>
+              Create first listing →
+            </Link>
           </div>
-          <Link
-            href="/dashboard/listings/new"
-            style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "transparent", border: `1px solid ${BORDER}`, color: MUTED, fontSize: "13px", padding: "11px 22px", borderRadius: "100px", textDecoration: "none", transition: "color 0.15s, border-color 0.15s", flexShrink: 0 }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = WARM_WHITE; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = MUTED; e.currentTarget.style.borderColor = BORDER; }}
-          >
-            + New listing
-          </Link>
-        </div>
-
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px" }}>
+            {listings.map((listing) => (
+              <PortfolioListingCard key={listing.id} listing={listing} />
+            ))}
+          </div>
+        )}
       </main>
+    </div>
+  );
+}
+
+function PortfolioListingCard({ listing }: { listing: Listing }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ background: SURFACE, border: `1px solid ${hovered ? GOLD_BORDER : BORDER}`, borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column", gap: "12px", transition: "border-color 0.2s" }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: "11px", fontWeight: 600, color: GOLD, background: "rgba(200,169,110,0.1)", border: `1px solid ${GOLD_BORDER}`, borderRadius: "6px", padding: "3px 10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          {propertyTypeShort(listing.property_type)}
+        </span>
+        <span style={{ fontSize: "11px", color: "#6ABF6A" }}>● Showing on portfolio</span>
+      </div>
+
+      <div>
+        <p style={{ fontSize: "15px", fontWeight: 500, color: WARM_WHITE, margin: "0 0 3px" }}>{listing.address}</p>
+        <p style={{ fontSize: "12px", color: MUTED, margin: 0 }}>
+          {listing.neighborhood ? `${listing.neighborhood}, ` : ""}{listing.city}
+        </p>
+      </div>
+
+      <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "24px", fontWeight: 400, color: WARM_WHITE, margin: 0 }}>
+        {formatPrice(listing.currency, listing.price)}
+      </p>
+
+      <div style={{ display: "flex", gap: "16px" }}>
+        {listing.bedrooms != null && <span style={{ fontSize: "12px", color: MUTED }}>🛏 {listing.bedrooms} bd</span>}
+        {listing.bathrooms != null && <span style={{ fontSize: "12px", color: MUTED }}>🚿 {listing.bathrooms} ba</span>}
+        {listing.area != null && <span style={{ fontSize: "12px", color: MUTED }}>⊡ {listing.area.toLocaleString()} {listing.area_unit ?? "sqft"}</span>}
+      </div>
     </div>
   );
 }
