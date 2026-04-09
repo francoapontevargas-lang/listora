@@ -152,7 +152,13 @@ const EMPTY_FORM: ListingFormData = {
 // ─── Page ─────────────────────────────────────────────────────
 export default function NewListingPage() {
   const router = useRouter();
-  const [form, setForm] = useState<ListingFormData>(EMPTY_FORM);
+  const [form, setForm] = useState<ListingFormData>(() => {
+    if (typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("listora_listing_form");
+      if (saved) return JSON.parse(saved);
+    }
+    return EMPTY_FORM;
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [customInput, setCustomInput] = useState("");
