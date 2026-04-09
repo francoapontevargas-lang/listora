@@ -30,7 +30,7 @@ interface Listing {
   city: string;
   neighborhood: string | null;
   currency: string | null;
-  price: string | null;
+  price: string | number | null;
   bedrooms: number | null;
   bathrooms: number | null;
   area: number | null;
@@ -39,10 +39,10 @@ interface Listing {
   created_at: string;
 }
 
-function formatPrice(currency: string | null, price: string | null): string {
-  if (!price) return "—";
-  const num = parseFloat(price.replace(/,/g, ""));
-  if (isNaN(num)) return price;
+function formatPrice(currency: string | null, price: string | number | null): string {
+  if (price == null || price === "") return "—";
+  const num = typeof price === "number" ? price : parseFloat(String(price).replace(/,/g, ""));
+  if (isNaN(num)) return String(price);
   return `${currency ?? ""} ${num.toLocaleString("en-US")}`.trim();
 }
 
