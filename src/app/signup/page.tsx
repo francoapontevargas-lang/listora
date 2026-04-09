@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const GOLD = "#C8A96E";
@@ -12,13 +11,12 @@ const MUTED = "#4A4540";
 const BORDER = "rgba(200,169,110,0.15)";
 
 export default function SignupPage() {
-  const router = useRouter();
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +36,9 @@ export default function SignupPage() {
     const { error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+      },
     });
     setLoading(false);
 
@@ -47,8 +47,54 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/onboarding");
+    setSent(true);
   };
+
+  if (sent) {
+    return (
+      <main
+        style={{
+          minHeight: "100vh",
+          background: BG,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "32px 24px",
+          fontFamily: "var(--font-dm-sans)",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: "440px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "28px" }}>
+          <Link
+            href="/"
+            style={{ fontFamily: "var(--font-cormorant)", fontSize: "26px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none", letterSpacing: "-0.01em" }}
+          >
+            Listora
+          </Link>
+          <div
+            style={{
+              width: "64px", height: "64px", borderRadius: "50%",
+              background: "rgba(200,169,110,0.08)", border: `1px solid ${BORDER}`,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: "26px",
+            }}
+          >
+            ✉
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "36px", fontWeight: 400, color: WARM_WHITE, letterSpacing: "-0.02em", margin: 0 }}>
+              Check your inbox.
+            </h1>
+            <p style={{ fontSize: "14px", color: MUTED, margin: 0, lineHeight: 1.6 }}>
+              We sent a confirmation link to <span style={{ color: WARM_WHITE }}>{email}</span>. Click it to activate your account.
+            </p>
+          </div>
+          <p style={{ fontSize: "13px", color: MUTED, margin: 0 }}>
+            Already have an account?{" "}
+            <Link href="/login" style={{ color: GOLD, textDecoration: "none" }}>Log in</Link>
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main
@@ -126,14 +172,6 @@ export default function SignupPage() {
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <Field
-              label="Full name"
-              type="text"
-              value={fullName}
-              onChange={setFullName}
-              placeholder="Your full name"
-              required
-            />
             <Field
               label="Email"
               type="email"
