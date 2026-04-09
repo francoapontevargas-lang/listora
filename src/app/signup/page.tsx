@@ -131,7 +131,7 @@ export default function SignupPage() {
               type="text"
               value={fullName}
               onChange={setFullName}
-              placeholder="Maria Garcia"
+              placeholder="Your full name"
               required
             />
             <Field

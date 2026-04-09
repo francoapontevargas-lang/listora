@@ -131,124 +131,108 @@
 
 /* ─── Listora landing page ──────────────────────────────── */
 
-/* ─── Mesh gradient hero background ─────────────────────── */
+/* ─── Silk mesh hero background ─────────────────────────── */
 
-.mesh-bg {
-  background: #080808;
-}
-
-.mesh-layer {
+/* Shared layer base */
+.silk-1, .silk-2, .silk-3, .silk-4, .silk-5, .silk-6 {
   position: absolute;
-  border-radius: 50%;
-  /* Blur spread — low enough that color survives it */
-  filter: blur(60px);
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
   will-change: transform;
 }
 
-/* Layer 1 — gold, top-right, 20s */
-.mesh-1 {
-  width: 90vw;
-  height: 90vw;
-  top: -30vw;
-  right: -20vw;
-  background: radial-gradient(ellipse at center, rgba(200,169,110,0.40) 0%, rgba(200,169,110,0.15) 40%, transparent 72%);
-  animation: mesh1 20s ease-in-out infinite alternate;
+/* L1 — gold streak, top-left origin, 25s */
+.silk-1 {
+  background: linear-gradient(135deg, #C8A96E 0%, rgba(200,169,110,0.4) 25%, transparent 60%);
+  opacity: 0.75;
+  animation: silk1 25s ease-in-out infinite alternate;
 }
 
-/* Layer 2 — burnt amber, bottom-left, 25s */
-.mesh-2 {
-  width: 85vw;
-  height: 85vw;
-  bottom: -25vw;
-  left: -15vw;
-  background: radial-gradient(ellipse at center, rgba(139,94,42,0.38) 0%, rgba(139,94,42,0.14) 42%, transparent 72%);
-  animation: mesh2 25s ease-in-out infinite alternate;
-  animation-delay: -7s;
+/* L2 — deep burgundy, bottom-left, 30s */
+.silk-2 {
+  background: linear-gradient(45deg, #7B2D3E 0%, #3D0A14 40%, transparent 70%);
+  opacity: 0.70;
+  animation: silk2 30s ease-in-out infinite alternate;
+  animation-delay: -8s;
 }
 
-/* Layer 3 — burgundy, mid-left, 30s */
-.mesh-3 {
-  width: 80vw;
-  height: 80vw;
-  top: 10vw;
-  left: -20vw;
-  background: radial-gradient(ellipse at center, rgba(123,45,62,0.35) 0%, rgba(123,45,62,0.12) 44%, transparent 72%);
-  animation: mesh3 30s ease-in-out infinite alternate;
-  animation-delay: -12s;
-}
-
-/* Layer 4 — dark teal, bottom-right, 35s */
-.mesh-4 {
-  width: 80vw;
-  height: 80vw;
-  bottom: -20vw;
-  right: -10vw;
-  background: radial-gradient(ellipse at center, rgba(13,53,53,0.40) 0%, rgba(13,53,53,0.15) 40%, transparent 70%);
-  animation: mesh4 35s ease-in-out infinite alternate;
-  animation-delay: -18s;
-}
-
-/* Layer 5 — gold warm center spine, 28s */
-.mesh-5 {
-  width: 70vw;
-  height: 70vw;
-  top: 15vw;
-  left: 15vw;
-  background: radial-gradient(ellipse at center, rgba(200,169,110,0.25) 0%, rgba(200,169,110,0.08) 45%, transparent 68%);
-  animation: mesh5 28s ease-in-out infinite alternate;
+/* L3 — bright warm white highlight streak, sharp, 20s */
+.silk-3 {
+  background: linear-gradient(200deg, rgba(245,230,200,0.9) 0%, rgba(245,230,200,0.3) 20%, transparent 42%);
+  opacity: 0.60;
+  animation: silk3 20s ease-in-out infinite alternate;
   animation-delay: -5s;
 }
 
-/* Layer 6 — amber upper-center, 40s */
-.mesh-6 {
-  width: 75vw;
-  height: 75vw;
-  top: -15vw;
-  left: 10vw;
-  background: radial-gradient(ellipse at center, rgba(139,94,42,0.30) 0%, rgba(139,94,42,0.10) 42%, transparent 70%);
-  animation: mesh6 40s ease-in-out infinite alternate;
-  animation-delay: -22s;
+/* L4 — amber mid-field, 35s */
+.silk-4 {
+  background: linear-gradient(110deg, #8B5E2A 0%, rgba(139,94,42,0.5) 30%, transparent 55%);
+  opacity: 0.80;
+  animation: silk4 35s ease-in-out infinite alternate;
+  animation-delay: -14s;
 }
 
-@keyframes mesh1 {
-  0%   { transform: translate(0vw,   0vw)   scale(1);    }
-  33%  { transform: translate(-8vw,  12vw)  scale(1.05); }
-  66%  { transform: translate(-18vw, 6vw)   scale(0.97); }
-  100% { transform: translate(-12vw, 20vw)  scale(1.08); }
+/* L5 — dark red, bottom-right, 28s */
+.silk-5 {
+  background: linear-gradient(170deg, #2D0A0A 0%, #7B2D3E 30%, transparent 60%);
+  opacity: 0.85;
+  animation: silk5 28s ease-in-out infinite alternate;
+  animation-delay: -20s;
 }
 
-@keyframes mesh2 {
-  0%   { transform: translate(0vw,   0vw)   scale(1);    }
-  40%  { transform: translate(15vw, -10vw)  scale(1.06); }
-  70%  { transform: translate(8vw,  -18vw)  scale(0.95); }
-  100% { transform: translate(20vw, -14vw)  scale(1.04); }
+/* L6 — gold highlight streak, thin bright band, 22s */
+.silk-6 {
+  background: linear-gradient(80deg, transparent 30%, rgba(200,169,110,0.85) 60%, transparent 80%);
+  opacity: 0.65;
+  animation: silk6 22s ease-in-out infinite alternate;
+  animation-delay: -11s;
 }
 
-@keyframes mesh3 {
-  0%   { transform: translate(0vw,  0vw)   scale(1);    }
-  30%  { transform: translate(12vw, -8vw)  scale(1.07); }
-  65%  { transform: translate(20vw,  5vw)  scale(0.96); }
-  100% { transform: translate(15vw,-15vw)  scale(1.03); }
+/* Radial vignette — center slightly lighter, edges darker */
+.silk-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.7) 100%);
+  pointer-events: none;
 }
 
-@keyframes mesh4 {
-  0%   { transform: translate(0vw,   0vw)   scale(1);    }
-  45%  { transform: translate(-14vw,-10vw)  scale(1.05); }
-  80%  { transform: translate(-22vw,  5vw)  scale(0.98); }
-  100% { transform: translate(-18vw,-18vw)  scale(1.06); }
+/* ── Keyframes ── each translates 5-10% and rotates gradient via skew */
+@keyframes silk1 {
+  0%   { transform: translate(0%,   0%)   rotate(0deg);  }
+  40%  { transform: translate(-6%,  8%)   rotate(15deg); }
+  100% { transform: translate(-10%, 5%)   rotate(28deg); }
 }
 
-@keyframes mesh5 {
-  0%   { transform: translate(0vw,   0vw)  scale(1);    }
-  50%  { transform: translate(-10vw, 14vw) scale(1.09); }
-  100% { transform: translate(10vw, -10vw) scale(0.94); }
+@keyframes silk2 {
+  0%   { transform: translate(0%,  0%)  rotate(0deg);   }
+  35%  { transform: translate(8%,  -7%) rotate(-18deg); }
+  100% { transform: translate(5%,  -10%) rotate(-26deg); }
 }
 
-@keyframes mesh6 {
-  0%   { transform: translate(0vw,  0vw)  scale(1);    }
-  35%  { transform: translate(16vw, 12vw) scale(1.04); }
-  70%  { transform: translate(8vw,  22vw) scale(0.97); }
-  100% { transform: translate(20vw,  8vw) scale(1.06); }
+@keyframes silk3 {
+  0%   { transform: translate(0%,  0%)  rotate(0deg);  }
+  50%  { transform: translate(-9%, 6%)  rotate(22deg); }
+  100% { transform: translate(-5%, 10%) rotate(30deg); }
+}
+
+@keyframes silk4 {
+  0%   { transform: translate(0%,   0%)   rotate(0deg);   }
+  45%  { transform: translate(7%,   -8%)  rotate(-20deg); }
+  100% { transform: translate(10%,  -5%)  rotate(-28deg); }
+}
+
+@keyframes silk5 {
+  0%   { transform: translate(0%,  0%)   rotate(0deg);  }
+  30%  { transform: translate(-8%, -6%)  rotate(12deg); }
+  100% { transform: translate(-6%, -10%) rotate(24deg); }
+}
+
+@keyframes silk6 {
+  0%   { transform: translate(0%,  0%)  rotate(0deg);   }
+  55%  { transform: translate(9%,  7%)  rotate(-16deg); }
+  100% { transform: translate(6%,  10%) rotate(-25deg); }
 }
 
 /* Ticker */

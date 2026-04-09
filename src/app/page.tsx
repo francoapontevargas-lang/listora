@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { motion } from "framer-motion";
 
 // ─── Design tokens ───────────────────────────────────────────
@@ -24,7 +25,7 @@ const features = [
     num: "02",
     title: "Voice Clone Narration",
     desc: "Record once. Listora clones your voice and narrates every video automatically.",
-    detail: "Powered by ElevenLabs voice synthesis — sounds exactly like you, even in Spanish.",
+    detail: "Powered by ElevenLabs voice synthesis — sounds exactly like you — in any language, any market.",
   },
   {
     num: "03",
@@ -263,7 +264,7 @@ export default function Home() {
   const [magnetXY, setMagnetXY] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
     // ── Initial states ──
     gsap.set(navRef.current, { opacity: 0, y: -16 });
@@ -306,30 +307,60 @@ export default function Home() {
       },
     });
 
-    // ── Feature cards reveal ──
-    featureCardsRef.current.forEach((card) => {
-      if (!card) return;
+    // ── Feature cards — scrubbed row reveal ──
+    // Cards start with pointer-events disabled so moving cards can't
+    // accidentally trigger onMouseEnter as they animate through the cursor.
+    const cards = featureCardsRef.current.filter((c): c is HTMLDivElement => Boolean(c));
+    gsap.set(cards, { opacity: 0, y: 60, pointerEvents: "none" });
+
+    const rowConfig = [
+      { start: "top 90%", end: "top 50%" },
+      { start: "top 80%", end: "top 40%" },
+      { start: "top 70%", end: "top 30%" },
+      { start: "top 95%", end: "top 55%" },
+    ];
+
+    for (let i = 0; i < 4; i++) {
+      const row = cards.slice(i * 2, i * 2 + 2);
+      if (!row.length) continue;
       gsap.fromTo(
-        card,
-        { opacity: 0, y: 36 },
+        row,
+        { opacity: 0, y: 60 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
-          ease: "power3.out",
+          ease: "none",
           scrollTrigger: {
-            trigger: card,
-            start: "top 88%",
-            toggleActions: "play none none none",
+            trigger: row[0],
+            start: rowConfig[i].start,
+            end: rowConfig[i].end,
+            scrub: 1,
+            // Re-enable pointer events only once the card is fully settled;
+            // disable again immediately when scrolling back.
+            onUpdate(self) {
+              const interactive = self.progress >= 0.5;
+              row.forEach(card => {
+                card.style.pointerEvents = interactive ? "auto" : "none";
+              });
+            },
+            onLeaveBack() {
+              row.forEach(card => { card.style.pointerEvents = "none"; });
+            },
           },
         }
       );
-    });
+    }
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
+
+  // ── Smooth scroll to section ──
+  const smoothScrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    gsap.to(window, { duration: 1.2, scrollTo: id, ease: "power2.inOut" });
+  };
 
   // ── Magnetic button ──
   const handleMagnetMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -398,6 +429,7 @@ export default function Home() {
                 key={link}
                 href={`#${link.toLowerCase()}`}
                 className="nav-link"
+                onClick={link === "Features" ? smoothScrollTo("#features") : undefined}
                 style={{
                   fontSize: "14px",
                   color: MUTED,
@@ -457,10 +489,9 @@ export default function Home() {
           padding: "140px 32px 100px",
         }}
       >
-        {/* ── Mesh gradient background ── */}
+        {/* ── Silk mesh background ── */}
         <div
           aria-hidden
-          className="mesh-bg"
           style={{
             position: "absolute",
             top: 0,
@@ -470,18 +501,21 @@ export default function Home() {
             zIndex: 0,
             pointerEvents: "none",
             overflow: "hidden",
+            background: "#080808",
           }}
         >
-          <div className="mesh-layer mesh-1" />
-          <div className="mesh-layer mesh-2" />
-          <div className="mesh-layer mesh-3" />
-          <div className="mesh-layer mesh-4" />
-          <div className="mesh-layer mesh-5" />
-          <div className="mesh-layer mesh-6" />
+          <div className="silk-1" />
+          <div className="silk-2" />
+          <div className="silk-3" />
+          <div className="silk-4" />
+          <div className="silk-5" />
+          <div className="silk-6" />
+          {/* Radial vignette overlay */}
+          <div className="silk-vignette" />
         </div>
 
         {/* Hero content */}
-        <div style={{ position: "relative", zIndex: 1, maxWidth: "920px", margin: "0 auto" }}>
+        <div style={{ position: "relative", zIndex: 10, maxWidth: "920px", margin: "0 auto" }}>
 
           {/* Headline */}
           <h1
@@ -568,6 +602,7 @@ export default function Home() {
 
             <Link
               href="#features"
+              onClick={smoothScrollTo("#features")}
               className="nav-link"
               style={{
                 fontSize: "14px",
@@ -594,7 +629,7 @@ export default function Home() {
             height: "52px",
             background: `linear-gradient(to bottom, ${GOLD}, transparent)`,
             transformOrigin: "top",
-            zIndex: 2,
+            zIndex: 10,
           }}
         />
       </section>
