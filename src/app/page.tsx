@@ -401,6 +401,7 @@ export default function Home() {
         }}
       >
         <div
+          className="nav-inner"
           style={{
             maxWidth: "1200px",
             margin: "0 auto",
@@ -423,13 +424,12 @@ export default function Home() {
             Listora
           </span>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
+          <div className="nav-links-desktop" style={{ display: "flex", alignItems: "center", gap: "28px" }}>
             {["Features", "Pricing", "About"].map((link) => (
               <Link
                 key={link}
                 href={`#${link.toLowerCase()}`}
                 className="nav-link"
-                onClick={link === "Features" ? smoothScrollTo("#features") : undefined}
                 style={{
                   fontSize: "14px",
                   color: MUTED,
@@ -469,6 +469,14 @@ export default function Home() {
               Get Started
             </Link>
           </div>
+
+          {/* Mobile-only: Log in + Get Started */}
+          <div className="nav-mobile-cta" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <Link href="/login" style={{ fontSize: "14px", color: MUTED, textDecoration: "none" }}>Log in</Link>
+            <Link href="/signup" style={{ fontSize: "13px", fontWeight: 600, color: BG, background: GOLD, padding: "8px 18px", borderRadius: "100px", textDecoration: "none" }}>
+              Start free
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -477,6 +485,7 @@ export default function Home() {
       ══════════════════════════════════════════ */}
       <section
         ref={heroRef}
+        className="hero-section"
         style={{
           position: "relative",
           zIndex: 1,
@@ -602,7 +611,6 @@ export default function Home() {
 
             <Link
               href="#features"
-              onClick={smoothScrollTo("#features")}
               className="nav-link"
               style={{
                 fontSize: "14px",
@@ -722,6 +730,7 @@ export default function Home() {
 
         {/* 2×4 grid */}
         <div
+          className="features-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
@@ -755,6 +764,7 @@ export default function Home() {
         }}
       >
         <div
+          className="cta-box"
           style={{
             background: "rgba(200,169,110,0.04)",
             border: "1px solid rgba(200,169,110,0.14)",
@@ -851,6 +861,7 @@ export default function Home() {
           FOOTER
       ══════════════════════════════════════════ */}
       <footer
+        className="landing-footer"
         style={{
           position: "relative",
           zIndex: 1,

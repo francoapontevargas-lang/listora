@@ -269,3 +269,108 @@
 .hero-headline {
   perspective: 1000px;
 }
+
+/* ─── Mobile responsive ───────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* ── Landing nav ── */
+  .nav-links-desktop { display: none !important; }
+  .nav-inner { padding: 14px 20px !important; }
+
+  /* ── Landing hero ── */
+  .hero-section { padding: 120px 20px 80px !important; }
+
+  /* ── Landing features grid ── */
+  .features-grid { grid-template-columns: 1fr !important; }
+
+  /* ── Landing CTA ── */
+  .cta-box { padding: 48px 24px !important; }
+  .cta-box h2 { font-size: 36px !important; }
+
+  /* ── Landing footer ── */
+  .landing-footer { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; padding: 24px 20px !important; }
+
+  /* ── Auth cards ── */
+  .auth-card { padding: 32px 24px !important; }
+
+  /* ── Dashboard sidebar — hidden on mobile ── */
+  .dash-sidebar { display: none !important; }
+
+  /* ── Dashboard layout wrapper ── */
+  .dash-layout { flex-direction: column !important; }
+
+  /* ── Dashboard mobile top bar ── */
+  .dash-mobile-topbar {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: sticky;
+    top: 0;
+    background: #080808;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  /* ── Dashboard mobile bottom nav ── */
+  .dash-mobile-bottomnav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #080808;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    z-index: 20;
+    padding: 10px 0 24px;
+    justify-content: space-around;
+  }
+
+  .dash-mobile-bottomnav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    text-decoration: none;
+    color: #4A4540;
+    padding: 4px 12px;
+    font-family: var(--font-dm-sans);
+  }
+
+  .dash-mobile-bottomnav a.active {
+    color: #C8A96E;
+  }
+
+  .dash-mobile-bottomnav a span.tab-icon {
+    font-size: 18px;
+  }
+
+  /* ── Dashboard main content ── */
+  .dash-main { padding: 24px 20px 100px !important; max-width: 100% !important; }
+  .dash-main-wide { padding: 24px 20px 100px !important; max-width: 100% !important; }
+
+  /* ── Listings grid: 1 col on mobile ── */
+  .listings-grid { grid-template-columns: 1fr !important; }
+  .portfolio-grid { grid-template-columns: 1fr !important; }
+
+  /* ── Public portfolio ── */
+  .public-portfolio-grid { grid-template-columns: 1fr !important; }
+  .public-header { padding: 60px 20px 40px !important; }
+  .public-topbar { padding: 14px 20px !important; }
+  .public-listings { padding: 40px 20px 60px !important; }
+
+  /* ── New listing form ── */
+  .form-main { padding: 24px 20px 80px !important; }
+
+  /* ── Result page ── */
+  .result-main { padding: 32px 20px 80px !important; }
+}
+
+/* ── Desktop: hide mobile-only elements ── */
+@media (min-width: 769px) {
+  .dash-mobile-topbar { display: none !important; }
+  .dash-mobile-bottomnav { display: none !important; }
+  .nav-mobile-cta { display: none !important; }
+}

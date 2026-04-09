@@ -97,10 +97,24 @@ export default function PortfolioDashboardPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, display: "flex", fontFamily: "var(--font-dm-sans)", color: WARM_WHITE }}>
+    <div className="dash-layout" style={{ minHeight: "100vh", background: BG, display: "flex", fontFamily: "var(--font-dm-sans)", color: WARM_WHITE }}>
+
+      {/* Mobile top bar */}
+      <div className="dash-mobile-topbar" style={{ display: "none" }}>
+        <Link href="/" style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none" }}>Listora</Link>
+        <button onClick={handleSignOut} style={{ background: "none", border: "none", color: MUTED, cursor: "pointer", fontSize: "13px", fontFamily: "var(--font-dm-sans)" }}>Log out</button>
+      </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="dash-mobile-bottomnav" style={{ display: "none" }}>
+        <Link href="/dashboard"><span className="tab-icon">⊞</span>Home</Link>
+        <Link href="/dashboard/listings"><span className="tab-icon">◈</span>Listings</Link>
+        <Link href="/dashboard/portfolio" className="active"><span className="tab-icon">⊡</span>Portfolio</Link>
+        <Link href="/dashboard/settings"><span className="tab-icon">⊙</span>Settings</Link>
+      </nav>
 
       {/* Sidebar */}
-      <aside style={{ width: "240px", flexShrink: 0, borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", padding: "28px 0", position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+      <aside className="dash-sidebar" style={{ width: "240px", flexShrink: 0, borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", padding: "28px 0", position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
         <Link href="/" style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none", letterSpacing: "-0.01em", padding: "0 24px", marginBottom: "36px", display: "block" }}>
           Listora
         </Link>
@@ -133,7 +147,7 @@ export default function PortfolioDashboardPage() {
       </aside>
 
       {/* Main */}
-      <main style={{ flex: 1, padding: "48px 52px", maxWidth: "1000px" }}>
+      <main className="dash-main" style={{ flex: 1, padding: "48px 52px", maxWidth: "1000px" }}>
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "48px", flexWrap: "wrap", gap: "16px" }}>
@@ -193,7 +207,7 @@ export default function PortfolioDashboardPage() {
             </Link>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px" }}>
+          <div className="portfolio-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px" }}>
             {listings.map((listing) => (
               <PortfolioListingCard key={listing.id} listing={listing} />
             ))}

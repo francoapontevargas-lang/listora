@@ -256,9 +256,15 @@ export default function NewListingPage() {
   const currentAmenities = AMENITIES_BY_TYPE[form.propertyType] ?? [];
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, color: WARM_WHITE, fontFamily: "var(--font-dm-sans)", display: "flex" }}>
+    <div className="dash-layout" style={{ minHeight: "100vh", background: BG, color: WARM_WHITE, fontFamily: "var(--font-dm-sans)", display: "flex" }}>
+      {/* Mobile top bar */}
+      <div className="dash-mobile-topbar" style={{ display: "none" }}>
+        <Link href="/dashboard" style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none" }}>Listora</Link>
+        <Link href="/dashboard/listings" style={{ fontSize: "13px", color: MUTED, textDecoration: "none" }}>← My Listings</Link>
+      </div>
+
       {/* Sidebar */}
-      <aside style={{ width: "220px", flexShrink: 0, borderRight: `1px solid ${BORDER}`, padding: "28px 0", display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh" }}>
+      <aside className="dash-sidebar" style={{ width: "220px", flexShrink: 0, borderRight: `1px solid ${BORDER}`, padding: "28px 0", display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh" }}>
         <Link href="/dashboard" style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none", padding: "0 24px", marginBottom: "40px", display: "block" }}>
           Listora
         </Link>
@@ -268,7 +274,7 @@ export default function NewListingPage() {
       </aside>
 
       {/* Form */}
-      <main style={{ flex: 1, padding: "48px 60px", maxWidth: "820px", overflowY: "auto" }}>
+      <main className="form-main" style={{ flex: 1, padding: "48px 60px", maxWidth: "820px", overflowY: "auto" }}>
         <p style={{ fontSize: "12px", color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>New listing</p>
         <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "42px", fontWeight: 400, letterSpacing: "-0.02em", color: WARM_WHITE, marginBottom: "52px" }}>
           Tell us about the property.

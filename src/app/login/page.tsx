@@ -87,6 +87,7 @@ export default function LoginPage() {
 
         {/* Card */}
         <div
+          className="auth-card"
           style={{
             background: "rgba(255,255,255,0.025)",
             border: `1px solid ${BORDER}`,

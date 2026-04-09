@@ -195,6 +195,7 @@ export default function ResultPage() {
 
   return (
     <div
+      className="dash-layout"
       style={{
         minHeight: "100vh",
         background: BG,
@@ -203,8 +204,15 @@ export default function ResultPage() {
         display: "flex",
       }}
     >
+      {/* Mobile top bar */}
+      <div className="dash-mobile-topbar" style={{ display: "none" }}>
+        <Link href="/dashboard" style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none" }}>Listora</Link>
+        <Link href="/dashboard/listings/new" style={{ fontSize: "13px", color: MUTED, textDecoration: "none" }}>← Edit</Link>
+      </div>
+
       {/* Sidebar */}
       <aside
+        className="dash-sidebar"
         style={{
           width: "220px",
           flexShrink: 0,
@@ -264,7 +272,7 @@ export default function ResultPage() {
       </aside>
 
       {/* Main content */}
-      <main style={{ flex: 1, padding: "48px 60px", maxWidth: "800px" }}>
+      <main className="result-main" style={{ flex: 1, padding: "48px 60px", maxWidth: "800px" }}>
         {/* Header */}
         <div style={{ marginBottom: "44px" }}>
           <p

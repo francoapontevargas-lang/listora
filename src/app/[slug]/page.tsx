@@ -122,14 +122,14 @@ export default function AgentPortfolioPage() {
     <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-dm-sans)", color: WARM_WHITE }}>
 
       {/* Top bar */}
-      <div style={{ borderBottom: `1px solid ${BORDER}`, padding: "16px 40px", display: "flex", justifyContent: "flex-end" }}>
+      <div className="public-topbar" style={{ borderBottom: `1px solid ${BORDER}`, padding: "16px 40px", display: "flex", justifyContent: "flex-end" }}>
         <Link href="/" style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", fontWeight: 500, color: MUTED, textDecoration: "none", letterSpacing: "-0.01em" }}>
           Listora
         </Link>
       </div>
 
       {/* Agent Header */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "72px 40px 56px" }}>
+      <div className="public-header" style={{ maxWidth: "900px", margin: "0 auto", padding: "72px 40px 56px" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "20px" }}>
 
           {/* Avatar */}
@@ -195,7 +195,7 @@ export default function AgentPortfolioPage() {
       </div>
 
       {/* Listings section */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "56px 40px 80px" }}>
+      <div className="public-listings" style={{ maxWidth: "900px", margin: "0 auto", padding: "56px 40px 80px" }}>
         <div style={{ marginBottom: "36px" }}>
           <p style={{ fontSize: "11px", color: GOLD, letterSpacing: "0.1em", textTransform: "uppercase", margin: "0 0 10px" }}>Portfolio</p>
           <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "36px", fontWeight: 400, letterSpacing: "-0.02em", color: WARM_WHITE, margin: 0 }}>
@@ -209,7 +209,7 @@ export default function AgentPortfolioPage() {
             <p style={{ fontSize: "15px", color: MUTED, margin: 0 }}>No active listings at the moment.</p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "20px" }}>
+          <div className="public-portfolio-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
             {listings.map((listing) => (
               <PublicListingCard key={listing.id} listing={listing} agentSlug={slug} />
             ))}
