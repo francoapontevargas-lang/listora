@@ -70,7 +70,7 @@ export default function PortfolioDashboardPage() {
         supabase.from("listings")
           .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status")
           .eq("user_id", user.id)
-          .or("status.eq.Active,status.is.null")
+          .or("status.eq.Active,status.eq.active,status.is.null")
           .order("created_at", { ascending: false }),
       ]);
 
