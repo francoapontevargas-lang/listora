@@ -54,12 +54,22 @@ ${details}
 TONE: ${toneGuide[form.tone] ?? form.tone}
 CALL TO ACTION: "${form.cta}"
 
-RULES (follow every one):
+ANTI-HALLUCINATION RULES (non-negotiable):
+- Only state facts that appear directly in the property details above — do not invent or infer anything
+- Never describe specific rooms or spaces unless the agent explicitly mentioned them in the highlights
+- Never say "practically every room", "throughout the home", "from every angle", or any claim about views from specific rooms unless stated
+- Never invent lifestyle scenarios (travel, weekend markets, morning routines) unless the agent wrote them in the highlights
+- Never make assumptions about the buyer's life, relationship status, or lifestyle
+- Never write from a first-person agent opinion ("I would buy this myself", "this one is special to me")
+- If a feature was not mentioned in the form data, do not mention it
+
+WRITING RULES:
 - Never start with dramatic weather, sunrise, or sensory scene-setting
-- Never use: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world", or any similar AI-sounding phrases
+- Never use: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world", or similar AI-sounding phrases
+- No casual or salesy phrases like "you know what the numbers look like" or "trust me on this one"
 - Start with a direct statement about the property or a simple, specific question
-- Sound like a human texting a friend about a great find — excited but grounded and real
-- Keep the body under 150 words before the bullet points
+- Write like a seasoned professional agent — confident and factual, not personal or salesy
+- Keep the intro to 3–4 sentences max, every sentence grounded in the form data provided
 - End with a simple, direct CTA using "${form.cta}" — no dramatic closing line
 - Hashtags: 15 max, mix of local and property-specific tags only — no generic ones like #DreamHome or #DreamHomeGoals
 
@@ -70,6 +80,7 @@ BULLET POINT RULES (strict):
 - Then 4–6 additional bullets that are SHORT (8 words max each), factual, and specific
 - Good bullet examples: "🌊 Corner unit with ocean and city views" / "🏊 Private pool and terrace" / "📍 Steps from Brickell City Centre"
 - Bad bullet examples: "✨ Your personal resort awaits" / "🛋️ Say yes to the wardrobe you deserve"
+- Only bullet features that were explicitly provided in the form — no invented amenities
 - Bullets read like a checklist — not a poem
 
 FORMAT (output exactly this, no section labels):
