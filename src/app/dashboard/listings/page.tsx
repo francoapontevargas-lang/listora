@@ -274,19 +274,13 @@ function ListingCard({ listing }: { listing: Listing }) {
       {/* Stats */}
       <div style={{ display: "flex", gap: "20px" }}>
         {listing.bedrooms != null && (
-          <span style={{ fontSize: "13px", color: MUTED, display: "flex", alignItems: "center", gap: "5px" }}>
-            🛏 {listing.bedrooms} bd
-          </span>
+          <span style={{ fontSize: "13px", color: MUTED }}>{listing.bedrooms} bd</span>
         )}
         {listing.bathrooms != null && (
-          <span style={{ fontSize: "13px", color: MUTED, display: "flex", alignItems: "center", gap: "5px" }}>
-            🚿 {listing.bathrooms} ba
-          </span>
+          <span style={{ fontSize: "13px", color: MUTED }}>{listing.bathrooms} ba</span>
         )}
         {listing.area != null && (
-          <span style={{ fontSize: "13px", color: MUTED, display: "flex", alignItems: "center", gap: "5px" }}>
-            ⊡ {listing.area.toLocaleString()} {listing.area_unit ?? "sqft"}
-          </span>
+          <span style={{ fontSize: "13px", color: MUTED }}>{listing.area.toLocaleString()} {listing.area_unit ?? "sqft"}</span>
         )}
       </div>
 
