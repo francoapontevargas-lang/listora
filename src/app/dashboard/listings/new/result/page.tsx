@@ -167,6 +167,17 @@ export default function ResultPage() {
         return;
       }
 
+      // Insert images
+      if (form.images && form.images.length > 0) {
+        await supabase.from("listing_images").insert(
+          form.images.map((url, i) => ({
+            listing_id: listing.id,
+            url,
+            order_index: i,
+          }))
+        );
+      }
+
       setSaved(true);
       sessionStorage.removeItem("listora_listing_result");
       sessionStorage.removeItem("listora_listing_form");

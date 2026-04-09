@@ -22,6 +22,11 @@ interface Profile {
   slug: string;
 }
 
+interface ListingImage {
+  url: string;
+  order_index: number;
+}
+
 interface Listing {
   id: string;
   property_type: string;
@@ -35,6 +40,7 @@ interface Listing {
   area: number | null;
   area_unit: string | null;
   status: string | null;
+  listing_images?: ListingImage[];
 }
 
 function getInitials(name: string | null): string {

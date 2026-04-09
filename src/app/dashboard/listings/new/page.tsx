@@ -123,6 +123,7 @@ export interface ListingFormData {
   language: string;
   tone: string;
   cta: string;
+  images: string[];
 }
 
 const EMPTY_FORM: ListingFormData = {
@@ -147,6 +148,7 @@ const EMPTY_FORM: ListingFormData = {
   language: "English",
   tone: "Luxury",
   cta: "DM for info",
+  images: [],
 };
 
 // ─── Page ─────────────────────────────────────────────────────
@@ -155,7 +157,10 @@ export default function NewListingPage() {
   const [form, setForm] = useState<ListingFormData>(() => {
     if (typeof window !== "undefined") {
       const saved = sessionStorage.getItem("listora_listing_form");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...EMPTY_FORM, ...parsed, images: parsed.images ?? [] };
+      }
     }
     return EMPTY_FORM;
   });
@@ -163,6 +168,29 @@ export default function NewListingPage() {
   const [error, setError] = useState<string | null>(null);
   const [customInput, setCustomInput] = useState("");
   const customInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const uploadImages = async (files: FileList) => {
+    setUploading(true);
+    const uploaded: string[] = [];
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith("image/")) continue;
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload-image", { method: "POST", body: fd });
+      if (res.ok) {
+        const { url } = await res.json();
+        uploaded.push(url);
+      }
+    }
+    setForm((f) => ({ ...f, images: [...f.images, ...uploaded] }));
+    setUploading(false);
+  };
+
+  const removeImage = (url: string) =>
+    setForm((f) => ({ ...f, images: f.images.filter((u) => u !== url) }));
 
   const set = <K extends keyof ListingFormData>(key: K, value: ListingFormData[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -508,8 +536,75 @@ export default function NewListingPage() {
             </div>
           </Card>
 
-          {/* ── 04 Content Preferences ── */}
-          <Card num="04" title="Content Preferences">
+          {/* ── 04 Property Photos ── */}
+          <Card num="04" title="Property Photos">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => e.target.files && uploadImages(e.target.files)}
+            />
+
+            {/* Upload zone */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => { e.preventDefault(); setDragOver(false); uploadImages(e.dataTransfer.files); }}
+              style={{
+                border: `1.5px dashed ${dragOver ? GOLD : GOLD_BORDER}`,
+                borderRadius: "12px",
+                padding: "36px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                cursor: "pointer",
+                background: dragOver ? "rgba(200,169,110,0.04)" : "transparent",
+                transition: "all 0.2s",
+                marginBottom: form.images.length > 0 ? "20px" : 0,
+              }}
+            >
+              <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(200,169,110,0.08)", border: `1px solid ${GOLD_BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
+                ◈
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontSize: "14px", color: WARM_WHITE, margin: "0 0 4px", fontWeight: 500 }}>
+                  {uploading ? "Uploading…" : "Click or drag photos here"}
+                </p>
+                <p style={{ fontSize: "12px", color: MUTED, margin: 0 }}>JPG, PNG, WEBP — up to 10 photos</p>
+              </div>
+            </div>
+
+            {/* Previews */}
+            {form.images.length > 0 && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+                {form.images.map((url, i) => (
+                  <div key={url} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "8px", overflow: "hidden", border: `1px solid ${BORDER}` }}>
+                    {i === 0 && (
+                      <div style={{ position: "absolute", top: "6px", left: "6px", background: GOLD, color: BG, fontSize: "10px", fontWeight: 700, padding: "2px 7px", borderRadius: "4px", zIndex: 1, letterSpacing: "0.04em" }}>
+                        COVER
+                      </div>
+                    )}
+                    <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); removeImage(url); }}
+                      style={{ position: "absolute", top: "6px", right: "6px", width: "22px", height: "22px", borderRadius: "50%", background: "rgba(0,0,0,0.7)", border: "none", color: WARM_WHITE, fontSize: "13px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, zIndex: 1 }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          {/* ── 05 Content Preferences ── */}
+          <Card num="05" title="Content Preferences">
             <Grid cols={2}>
               <SelectField label="Post language" value={form.language} onChange={(v) => set("language", v)} options={LANGUAGES} />
               <SelectField label="Tone" value={form.tone} onChange={(v) => set("tone", v)} options={TONES} />

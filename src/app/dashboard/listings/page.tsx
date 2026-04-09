@@ -37,6 +37,7 @@ interface Listing {
   area_unit: string | null;
   status: ListingStatus | null;
   created_at: string;
+  listing_images?: { url: string; order_index: number }[];
 }
 
 function formatPrice(currency: string | null, price: string | number | null): string {
@@ -75,7 +76,7 @@ export default function ListingsPage() {
         supabase.from("profiles").select("full_name, brokerage, slug").eq("id", user.id).maybeSingle(),
         supabase
           .from("listings")
-          .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status, created_at")
+          .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status, created_at, listing_images(url, order_index)")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false }),
       ]);
@@ -224,6 +225,7 @@ function ListingCard({ listing }: { listing: Listing }) {
   const [hovered, setHovered] = useState(false);
   const status = listing.status ?? "Active";
   const sc = statusStyle(status);
+  const coverImage = listing.listing_images?.sort((a, b) => a.order_index - b.order_index)[0]?.url ?? null;
 
   return (
     <div
@@ -233,18 +235,26 @@ function ListingCard({ listing }: { listing: Listing }) {
         background: SURFACE,
         border: `1px solid ${hovered ? GOLD_BORDER : BORDER}`,
         borderRadius: "16px",
-        padding: "28px",
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        gap: "16px",
+        gap: "0",
         transition: "border-color 0.2s",
         position: "relative",
-        overflow: "hidden",
       }}
     >
       {hovered && (
-        <div aria-hidden style={{ position: "absolute", top: "-60px", right: "-60px", width: "180px", height: "180px", borderRadius: "50%", background: GOLD, opacity: 0.04, filter: "blur(50px)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: "-60px", right: "-60px", width: "180px", height: "180px", borderRadius: "50%", background: GOLD, opacity: 0.04, filter: "blur(50px)", pointerEvents: "none", zIndex: 0 }} />
       )}
+
+      {/* Cover image */}
+      {coverImage && (
+        <div style={{ width: "100%", height: "180px", overflow: "hidden", flexShrink: 0 }}>
+          <img src={coverImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.4s", transform: hovered ? "scale(1.03)" : "scale(1)" }} />
+        </div>
+      )}
+
+      <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
 
       {/* Type badge + status */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -304,6 +314,7 @@ function ListingCard({ listing }: { listing: Listing }) {
         >
           Edit
         </Link>
+      </div>
       </div>
     </div>
   );
