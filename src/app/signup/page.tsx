@@ -37,7 +37,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+        emailRedirectTo: `https://listora.studio/auth/callback`,
       },
     });
     setLoading(false);
