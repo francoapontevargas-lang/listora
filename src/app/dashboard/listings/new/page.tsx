@@ -30,7 +30,7 @@ export const PROPERTY_TYPE_LIST = [
 ] as const;
 
 // ─── Dynamic amenity sets ─────────────────────────────────────
-const AMENITIES_BY_TYPE: Record<string, string[]> = {
+export const AMENITIES_BY_TYPE: Record<string, string[]> = {
   "Residential — Single Family Home": [
     "Pool", "Garage", "Garden/Backyard", "Terrace/Balcony", "Ocean View",
     "Mountain View", "City View", "Modern Kitchen", "Walk-in Closet", "Master Suite",
