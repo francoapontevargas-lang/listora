@@ -14,11 +14,11 @@ function buildPrompt(form: ListingFormData, language: string): string {
     "English";
 
   const toneGuide: Record<string, string> = {
-    Professional: "authoritative and polished — written for discerning buyers who appreciate data and expertise",
-    Friendly: "warm and approachable — conversational tone that builds trust and connection",
-    Luxury: "aspirational and evocative — paint a picture of the lifestyle this property unlocks",
-    Casual: "relaxed and natural — feels like a friend sharing an exciting find",
-    Urgent: "time-sensitive and energetic — creates FOMO and motivates immediate action",
+    Professional: "Clean, factual, zero fluff. Let the numbers and facts do the selling. No adjectives that can't be verified.",
+    Friendly: "Warm and conversational, like talking to someone you trust. Still grounded in facts — just a more human delivery.",
+    Luxury: "Elevated and confident. The property speaks for itself — your job is to present it with authority, not hype.",
+    Casual: "Relaxed and direct. Like texting a friend about a great find. Short sentences, real talk.",
+    Urgent: "Direct and time-sensitive. State the opportunity clearly. No manipulation — just the facts with a sense of timing.",
   };
 
   const allAmenities = [...form.amenities, ...form.customAmenities];
@@ -44,50 +44,43 @@ function buildPrompt(form: ListingFormData, language: string): string {
     .filter(Boolean)
     .join("\n");
 
-  return `You are a top real estate agent writing an Instagram caption for one of your own listings. You write like a real person — confident, direct, and engaging. Not dry. Not poetic. Not like an AI.
+  return `You are a real estate agent writing Instagram captions for your own listings. You have 15 years of experience, you know what sells, and you write like a real professional — not like a marketing agency, not like an AI, not like a lifestyle blogger. You are direct, confident, and specific. Every word you write is grounded in the actual facts of the property.
 
 Write the caption in ${langLabel}.
 
-PROPERTY DETAILS:
+PROPERTY DETAILS (these are the only facts you may use):
 ${details}
 
 TONE: ${toneGuide[form.tone] ?? form.tone}
 CALL TO ACTION: "${form.cta}"
 
-INTRO PARAGRAPH (2–3 sentences, no more):
-- Sentence 1: Lead with the single most compelling fact about this property — the thing that makes it stand out. State it directly and confidently.
-- Sentence 2: Add 2–3 supporting facts drawn only from the property details above.
-- Sentence 3 (optional): If an ideal buyer was specified, add one clean, factual value statement for them. No drama, no lifestyle fantasy — just what makes this property right for that buyer.
-- Every sentence must be grounded in the form data. Do not invent, infer, or embellish.
+YOUR RULES:
 
-ANTI-HALLUCINATION RULES (non-negotiable):
-- Only state facts that appear directly in the property details above
-- Never describe specific rooms unless explicitly mentioned in the highlights
-- Never say "practically every room", "throughout the home", "from every angle", or similar
-- Never invent lifestyle scenarios unless the agent wrote them in the highlights
-- Never make assumptions about the buyer's life, relationship status, or lifestyle
-- Never write from first-person agent opinion ("I would buy this", "this one is special")
-- If a feature was not in the form data, do not mention it
+1. INTRO — 2 to 3 sentences only.
+   - Lead with the single strongest fact about this property.
+   - Add 2 supporting facts from the property details above.
+   - If an ideal buyer was specified, close with one clean factual sentence about who this works for.
+   - Never start with weather, sunrises, or emotional scenarios.
+   - Banned words: stunning, breathtaking, nestled, dream home, luxury lifestyle, elevate, curated, exquisite, impeccable, and any word that sounds like an AI wrote it.
 
-WRITING RULES:
-- Never open with weather, sunrise, or scene-setting
-- Banned words/phrases: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world"
-- No salesy filler: "you know what the numbers look like", "trust me on this one"
-- Confident and factual — the facts should do the selling, not the adjectives
-- End with a simple, direct CTA using "${form.cta}" — no closing flourish
-- Hashtags: 15 max, local and property-specific only — no generic tags like #DreamHome
+2. STATS LINE — Always the first bullet. Format exactly:
+   🏡 4 BD / 3 BA | 2,400 sq ft | ${form.currency} [price]
+   Include only numbers that were provided. Never invent numbers.
 
-BULLET POINT RULES:
-- First bullet is ALWAYS the stats line with all key numbers:
-  🏡 4 BD / 3 BA | 2,400 sq ft | Built 2018 | $1,250,000
-  Only include stats that were provided. Use the correct currency and area unit.
-- Then 4–6 bullets: one fact per bullet, max 8 words, from the amenities and highlights provided only
-- Choose the emoji that matches the actual feature — do not use a rooftop emoji if there's no rooftop
-- Good: "🌊 Direct ocean view from living area" / "🏊 Private rooftop pool" / "📍 Walking distance to Brickell City Centre"
-- Bad: "✨ Your personal resort awaits" / "🛋️ Space to grow into"
-- Only list amenities the agent selected or wrote — nothing invented
+3. REMAINING BULLETS — 4 to 6 bullets.
+   - One fact per bullet, maximum 8 words.
+   - Based only on amenities the agent selected or highlights they wrote.
+   - Use a relevant emoji that matches the actual feature.
+   - Never mention a feature that was not in the property details.
+   - Never say "practically every room", "throughout", "from every angle", or anything you cannot verify.
 
-FORMAT (output exactly this, no section labels):
+4. CTA — One line only, using exactly: "${form.cta}". No added drama.
+
+5. HASHTAGS — 12 to 15 hashtags. Mix of neighborhood, city, property type, and feature-specific. No generic hashtags: #DreamHome #Goals #Blessed #LuxuryLifestyle are all banned. Make them specific to the actual location and property type.
+
+6. ACCURACY — You can only write about what is in the property details. If a feature is not mentioned, it does not exist. Do not imagine, infer, or embellish. A buyer will make decisions based on this caption. Be accurate.
+
+FORMAT (output exactly this, no labels or section headers):
 [2–3 sentence intro]
 
 [stats bullet + 4–6 fact bullets]
