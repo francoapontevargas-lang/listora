@@ -128,3 +128,156 @@
     @apply font-sans;
   }
 }
+
+/* ─── Listora landing page ──────────────────────────────── */
+
+/* ─── Mesh gradient hero background ─────────────────────── */
+
+.mesh-bg {
+  background: #080808;
+}
+
+.mesh-layer {
+  position: absolute;
+  border-radius: 50%;
+  /* Blur spread — low enough that color survives it */
+  filter: blur(60px);
+  will-change: transform;
+}
+
+/* Layer 1 — gold, top-right, 20s */
+.mesh-1 {
+  width: 90vw;
+  height: 90vw;
+  top: -30vw;
+  right: -20vw;
+  background: radial-gradient(ellipse at center, rgba(200,169,110,0.40) 0%, rgba(200,169,110,0.15) 40%, transparent 72%);
+  animation: mesh1 20s ease-in-out infinite alternate;
+}
+
+/* Layer 2 — burnt amber, bottom-left, 25s */
+.mesh-2 {
+  width: 85vw;
+  height: 85vw;
+  bottom: -25vw;
+  left: -15vw;
+  background: radial-gradient(ellipse at center, rgba(139,94,42,0.38) 0%, rgba(139,94,42,0.14) 42%, transparent 72%);
+  animation: mesh2 25s ease-in-out infinite alternate;
+  animation-delay: -7s;
+}
+
+/* Layer 3 — burgundy, mid-left, 30s */
+.mesh-3 {
+  width: 80vw;
+  height: 80vw;
+  top: 10vw;
+  left: -20vw;
+  background: radial-gradient(ellipse at center, rgba(123,45,62,0.35) 0%, rgba(123,45,62,0.12) 44%, transparent 72%);
+  animation: mesh3 30s ease-in-out infinite alternate;
+  animation-delay: -12s;
+}
+
+/* Layer 4 — dark teal, bottom-right, 35s */
+.mesh-4 {
+  width: 80vw;
+  height: 80vw;
+  bottom: -20vw;
+  right: -10vw;
+  background: radial-gradient(ellipse at center, rgba(13,53,53,0.40) 0%, rgba(13,53,53,0.15) 40%, transparent 70%);
+  animation: mesh4 35s ease-in-out infinite alternate;
+  animation-delay: -18s;
+}
+
+/* Layer 5 — gold warm center spine, 28s */
+.mesh-5 {
+  width: 70vw;
+  height: 70vw;
+  top: 15vw;
+  left: 15vw;
+  background: radial-gradient(ellipse at center, rgba(200,169,110,0.25) 0%, rgba(200,169,110,0.08) 45%, transparent 68%);
+  animation: mesh5 28s ease-in-out infinite alternate;
+  animation-delay: -5s;
+}
+
+/* Layer 6 — amber upper-center, 40s */
+.mesh-6 {
+  width: 75vw;
+  height: 75vw;
+  top: -15vw;
+  left: 10vw;
+  background: radial-gradient(ellipse at center, rgba(139,94,42,0.30) 0%, rgba(139,94,42,0.10) 42%, transparent 70%);
+  animation: mesh6 40s ease-in-out infinite alternate;
+  animation-delay: -22s;
+}
+
+@keyframes mesh1 {
+  0%   { transform: translate(0vw,   0vw)   scale(1);    }
+  33%  { transform: translate(-8vw,  12vw)  scale(1.05); }
+  66%  { transform: translate(-18vw, 6vw)   scale(0.97); }
+  100% { transform: translate(-12vw, 20vw)  scale(1.08); }
+}
+
+@keyframes mesh2 {
+  0%   { transform: translate(0vw,   0vw)   scale(1);    }
+  40%  { transform: translate(15vw, -10vw)  scale(1.06); }
+  70%  { transform: translate(8vw,  -18vw)  scale(0.95); }
+  100% { transform: translate(20vw, -14vw)  scale(1.04); }
+}
+
+@keyframes mesh3 {
+  0%   { transform: translate(0vw,  0vw)   scale(1);    }
+  30%  { transform: translate(12vw, -8vw)  scale(1.07); }
+  65%  { transform: translate(20vw,  5vw)  scale(0.96); }
+  100% { transform: translate(15vw,-15vw)  scale(1.03); }
+}
+
+@keyframes mesh4 {
+  0%   { transform: translate(0vw,   0vw)   scale(1);    }
+  45%  { transform: translate(-14vw,-10vw)  scale(1.05); }
+  80%  { transform: translate(-22vw,  5vw)  scale(0.98); }
+  100% { transform: translate(-18vw,-18vw)  scale(1.06); }
+}
+
+@keyframes mesh5 {
+  0%   { transform: translate(0vw,   0vw)  scale(1);    }
+  50%  { transform: translate(-10vw, 14vw) scale(1.09); }
+  100% { transform: translate(10vw, -10vw) scale(0.94); }
+}
+
+@keyframes mesh6 {
+  0%   { transform: translate(0vw,  0vw)  scale(1);    }
+  35%  { transform: translate(16vw, 12vw) scale(1.04); }
+  70%  { transform: translate(8vw,  22vw) scale(0.97); }
+  100% { transform: translate(20vw,  8vw) scale(1.06); }
+}
+
+/* Ticker */
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker 35s linear infinite;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Feature cards */
+.feature-card:hover {
+  background: rgba(200, 169, 110, 0.05) !important;
+}
+
+.feature-card:hover .card-accent {
+  transform: scaleY(1) !important;
+}
+
+/* Nav link hover */
+.nav-link:hover {
+  color: #f0ede6 !important;
+}
+
+/* Perspective container for headline */
+.hero-headline {
+  perspective: 1000px;
+}
