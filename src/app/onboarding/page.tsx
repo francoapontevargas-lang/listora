@@ -14,8 +14,6 @@ const BORDER = "rgba(200,169,110,0.15)";
 export default function OnboardingPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
-
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [brokerage, setBrokerage] = useState("");
@@ -23,7 +21,6 @@ export default function OnboardingPage() {
   const [language, setLanguage] = useState("english");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
 
   // Guard: redirect to login if no session
   useEffect(() => {
@@ -33,7 +30,6 @@ export default function OnboardingPage() {
         router.replace("/login");
       } else {
         setUserId(data.session.user.id);
-        setEmail(data.session.user.email ?? null);
         const name = data.session.user.user_metadata?.full_name ?? "";
         if (name) setFullName(name);
       }
@@ -76,60 +72,8 @@ export default function OnboardingPage() {
       return;
     }
 
-    setDone(true);
+    router.push("/dashboard");
   };
-
-  if (done) {
-    return (
-      <main
-        style={{
-          minHeight: "100vh",
-          background: BG,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "32px 24px",
-          fontFamily: "var(--font-dm-sans)",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "440px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "28px" }}>
-          <Link href="/" style={{ fontFamily: "var(--font-cormorant)", fontSize: "26px", fontWeight: 500, color: WARM_WHITE, textDecoration: "none", letterSpacing: "-0.01em" }}>
-            Listora
-          </Link>
-          <div
-            style={{
-              width: "64px", height: "64px", borderRadius: "50%",
-              background: "rgba(200,169,110,0.08)", border: `1px solid ${BORDER}`,
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: "26px",
-            }}
-          >
-            ✉
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "36px", fontWeight: 400, color: WARM_WHITE, letterSpacing: "-0.02em", margin: 0 }}>
-              Check your inbox.
-            </h1>
-            <p style={{ fontSize: "14px", color: MUTED, margin: 0, lineHeight: 1.6 }}>
-              We sent a confirmation link to{" "}
-              {email && <span style={{ color: WARM_WHITE }}>{email}</span>}.
-              {" "}Click it to confirm your account.
-            </p>
-          </div>
-          <button
-            onClick={() => router.push("/dashboard")}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
-              background: "transparent", border: `1px solid ${BORDER}`,
-              color: MUTED, fontSize: "13px", padding: "10px 24px",
-              borderRadius: "100px", cursor: "pointer", fontFamily: "var(--font-dm-sans)",
-            }}
-          >
-            Skip for now → go to dashboard
-          </button>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main
