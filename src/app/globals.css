@@ -1,3 +1,7 @@
+#__vercel_toolbar_container {
+  display: none !important;
+}
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";

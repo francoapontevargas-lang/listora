@@ -87,43 +87,57 @@ export default function ResultPage() {
 
     try {
       const supabase = createClient();
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
+
+      // Use getUser() — more reliable than getSession() for RLS auth context
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      console.log("[save listing] getUser:", { userData, userError });
+
+      if (userError || !userData.user) {
         router.push("/login");
         return;
       }
-      const userId = sessionData.session.user.id;
+      const userId = userData.user.id;
+
+      // Insert listing
+      const listingPayload = {
+        user_id: userId,
+        property_type: form.propertyType,
+        address: form.address,
+        city: form.city,
+        neighborhood: form.neighborhood || null,
+        currency: form.currency,
+        price: form.price,
+        bedrooms: form.bedrooms ? parseInt(form.bedrooms) : null,
+        bathrooms: form.bathrooms ? parseFloat(form.bathrooms) : null,
+        area: form.area ? parseFloat(form.area) : null,
+        area_unit: form.areaUnit,
+        units: form.units ? parseInt(form.units) : null,
+        year_built: form.yearBuilt ? parseInt(form.yearBuilt) : null,
+        parking_spaces: form.parkingSpaces ? parseInt(form.parkingSpaces) : null,
+        amenities: [...form.amenities, ...form.customAmenities],
+        special_highlights: form.specialHighlights || null,
+        neighborhood_description: form.neighborhoodDescription || null,
+        ideal_buyer: form.idealBuyer || null,
+        language: form.language,
+        tone: form.tone,
+        cta: form.cta,
+      };
+      console.log("[save listing] inserting listing:", listingPayload);
 
       const { data: listing, error: listingError } = await supabase
         .from("listings")
-        .insert({
-          user_id: userId,
-          property_type: form.propertyType,
-          address: form.address,
-          city: form.city,
-          neighborhood: form.neighborhood || null,
-          currency: form.currency,
-          price: form.price,
-          bedrooms: form.bedrooms ? parseInt(form.bedrooms) : null,
-          bathrooms: form.bathrooms ? parseFloat(form.bathrooms) : null,
-          area: form.area ? parseFloat(form.area) : null,
-          area_unit: form.areaUnit,
-          units: form.units ? parseInt(form.units) : null,
-          year_built: form.yearBuilt ? parseInt(form.yearBuilt) : null,
-          parking_spaces: form.parkingSpaces ? parseInt(form.parkingSpaces) : null,
-          amenities: [...form.amenities, ...form.customAmenities],
-          special_highlights: form.specialHighlights || null,
-          neighborhood_description: form.neighborhoodDescription || null,
-          ideal_buyer: form.idealBuyer || null,
-          language: form.language,
-          tone: form.tone,
-          cta: form.cta,
-        })
+        .insert(listingPayload)
         .select("id")
         .single();
 
-      if (listingError) throw listingError;
+      console.log("[save listing] listing result:", { listing, listingError });
 
+      if (listingError) {
+        setSaveError(`Listings insert failed: ${listingError.message} (code: ${listingError.code})`);
+        return;
+      }
+
+      // Insert listing_content
       const contentRows = isMultiLang
         ? tabs.map((lang) => ({
             listing_id: listing.id,
@@ -140,18 +154,26 @@ export default function ResultPage() {
             },
           ];
 
+      console.log("[save listing] inserting content rows:", contentRows);
+
       const { error: contentError } = await supabase
         .from("listing_content")
         .insert(contentRows);
 
-      if (contentError) throw contentError;
+      console.log("[save listing] content result:", { contentError });
+
+      if (contentError) {
+        setSaveError(`Content insert failed: ${contentError.message} (code: ${contentError.code})`);
+        return;
+      }
 
       setSaved(true);
       sessionStorage.removeItem("listora_listing_result");
       sessionStorage.removeItem("listora_listing_form");
     } catch (err) {
-      console.error("[save listing]", err);
-      setSaveError("Failed to save. Please try again.");
+      console.error("[save listing] unexpected error:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setSaveError(`Unexpected error: ${msg}`);
     } finally {
       setSaving(false);
     }

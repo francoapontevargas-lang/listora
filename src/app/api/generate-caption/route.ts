@@ -44,30 +44,42 @@ function buildPrompt(form: ListingFormData, language: string): string {
     .filter(Boolean)
     .join("\n");
 
-  return `You are an elite real estate marketing copywriter who specializes in Instagram content for luxury and aspirational properties.
+  return `You are a top real estate agent writing an Instagram caption for one of your own listings. You write like a real person — confident, knowledgeable, direct. Not poetic. Not over the top. Not like an AI trying to sound inspiring.
 
-Write a high-converting Instagram caption in ${langLabel} for the following property listing.
+Write the caption in ${langLabel}.
 
 PROPERTY DETAILS:
 ${details}
 
-CONTENT REQUIREMENTS:
-- Tone: ${toneGuide[form.tone] ?? form.tone}
-- Call to action: "${form.cta}"
+TONE: ${toneGuide[form.tone] ?? form.tone}
+CALL TO ACTION: "${form.cta}"
 
-CAPTION STRUCTURE (follow this exactly):
-1. HOOK (1–2 lines): Open with a bold, curiosity-inducing statement or vivid sensory image. Do NOT start with generic phrases like "Introducing" or "Check out". Make it stop-the-scroll.
-2. BODY (3–5 sentences): Describe the property compellingly. Focus on lifestyle and feeling, not just specs. Weave in the neighborhood context and ideal buyer when relevant.
-3. KEY FEATURES (4–6 bullet points with relevant emojis): List standout features concisely.
-4. CALL TO ACTION (1 sentence): End with "${form.cta}" woven into a compelling action line.
-5. HASHTAGS: Include exactly 18 highly relevant hashtags — a mix of location-specific, property-type, real estate professional, and aspirational lifestyle tags.
+RULES (follow every one):
+- Never start with dramatic weather, sunrise, or sensory scene-setting
+- Never use: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world", or any similar AI-sounding phrases
+- Start with a direct statement about the property or a simple, specific question
+- Sound like a human texting a friend about a great find — excited but grounded and real
+- Keep the body under 150 words before the bullet points
+- End with a simple, direct CTA using "${form.cta}" — no dramatic closing line
+- Hashtags: 15 max, mix of local and property-specific tags only — no generic ones like #DreamHome or #DreamHomeGoals
 
-Format the output as:
-[caption text]
+BULLET POINT RULES (strict):
+- First bullet is ALWAYS a stats line combining all key numbers in one line, like this:
+  🏡 4 BD / 3 BA | 2,400 sq ft | Built 2018 | $1,250,000
+  Only include stats that were provided. Use the correct currency and area unit.
+- Then 4–6 additional bullets that are SHORT (8 words max each), factual, and specific
+- Good bullet examples: "🌊 Corner unit with ocean and city views" / "🏊 Private pool and terrace" / "📍 Steps from Brickell City Centre"
+- Bad bullet examples: "✨ Your personal resort awaits" / "🛋️ Say yes to the wardrobe you deserve"
+- Bullets read like a checklist — not a poem
 
-[hashtags on a single line]
+FORMAT (output exactly this, no section labels):
+[opening line + body paragraph]
 
-Do not include section labels or explanatory text — just the ready-to-post caption followed by the hashtag line.`;
+[stats bullet + 4–6 fact bullets]
+
+[CTA line]
+
+[hashtags on one line]`;
 }
 
 // Languages that require parallel generation
