@@ -71,7 +71,7 @@ export default function ListingsPage() {
       if (error || !user) { router.replace("/login"); return; }
 
       const [{ data: profileData }, { data: listingsData }] = await Promise.all([
-        supabase.from("profiles").select("full_name, brokerage").eq("id", user.id).single(),
+        supabase.from("profiles").select("full_name, brokerage").eq("id", user.id).maybeSingle(),
         supabase
           .from("listings")
           .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status, created_at")
