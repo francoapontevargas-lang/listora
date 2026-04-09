@@ -232,9 +232,9 @@ function PortfolioListingCard({ listing }: { listing: Listing }) {
       </p>
 
       <div style={{ display: "flex", gap: "16px" }}>
-        {listing.bedrooms != null && <span style={{ fontSize: "12px", color: MUTED }}>{listing.bedrooms} bd</span>}
-        {listing.bathrooms != null && <span style={{ fontSize: "12px", color: MUTED }}>{listing.bathrooms} ba</span>}
-        {listing.area != null && <span style={{ fontSize: "12px", color: MUTED }}>{listing.area.toLocaleString()} {listing.area_unit ?? "sqft"}</span>}
+        {listing.bedrooms != null && <span style={{ fontSize: "13px", color: MUTED }}>{listing.bedrooms} bd</span>}
+        {listing.bathrooms != null && <span style={{ fontSize: "13px", color: MUTED }}>{listing.bathrooms} ba</span>}
+        {listing.area != null && <span style={{ fontSize: "13px", color: MUTED }}>{listing.area.toLocaleString()} {listing.area_unit ?? "sqft"}</span>}
       </div>
     </div>
   );
