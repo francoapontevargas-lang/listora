@@ -63,7 +63,8 @@ export default function ListingsPage() {
   const router = useRouter();
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<{ full_name: string | null; brokerage: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string | null; brokerage: string | null; slug: string | null } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -71,7 +72,7 @@ export default function ListingsPage() {
       if (error || !user) { router.replace("/login"); return; }
 
       const [{ data: profileData }, { data: listingsData }] = await Promise.all([
-        supabase.from("profiles").select("full_name, brokerage").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("full_name, brokerage, slug").eq("id", user.id).maybeSingle(),
         supabase
           .from("listings")
           .select("id, property_type, address, city, neighborhood, currency, price, bedrooms, bathrooms, area, area_unit, status, created_at")
@@ -133,6 +134,26 @@ export default function ListingsPage() {
         </nav>
 
         <div style={{ padding: "16px 12px 0", borderTop: `1px solid ${BORDER}` }}>
+          {profile?.slug && (
+            <div style={{ padding: "10px 14px", marginBottom: "8px" }}>
+              <p style={{ fontSize: "11px", color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 6px" }}>Your portfolio</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ fontSize: "12px", color: GOLD, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  listora.studio/{profile.slug}
+                </span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://listora.studio/${profile!.slug}`);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  style={{ background: "none", border: "none", color: copied ? "#6ABF6A" : MUTED, cursor: "pointer", fontSize: "11px", padding: "2px 4px", flexShrink: 0, fontFamily: "var(--font-dm-sans)", transition: "color 0.2s" }}
+                >
+                  {copied ? "✓" : "Copy"}
+                </button>
+              </div>
+            </div>
+          )}
           {profile?.full_name && (
             <div style={{ padding: "10px 14px", marginBottom: "4px" }}>
               <p style={{ fontSize: "13px", fontWeight: 500, color: WARM_WHITE, margin: 0 }}>{profile.full_name}</p>
