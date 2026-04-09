@@ -44,7 +44,7 @@ function buildPrompt(form: ListingFormData, language: string): string {
     .filter(Boolean)
     .join("\n");
 
-  return `You are a top real estate agent writing an Instagram caption for one of your own listings. You write like a real person — confident, knowledgeable, direct. Not poetic. Not over the top. Not like an AI trying to sound inspiring.
+  return `You are a top real estate agent writing an Instagram caption for one of your own listings. You write like a real person — confident, direct, and engaging. Not dry. Not poetic. Not like an AI.
 
 Write the caption in ${langLabel}.
 
@@ -54,37 +54,41 @@ ${details}
 TONE: ${toneGuide[form.tone] ?? form.tone}
 CALL TO ACTION: "${form.cta}"
 
+INTRO PARAGRAPH (2–3 sentences, no more):
+- Sentence 1: Lead with the single most compelling fact about this property — the thing that makes it stand out. State it directly and confidently.
+- Sentence 2: Add 2–3 supporting facts drawn only from the property details above.
+- Sentence 3 (optional): If an ideal buyer was specified, add one clean, factual value statement for them. No drama, no lifestyle fantasy — just what makes this property right for that buyer.
+- Every sentence must be grounded in the form data. Do not invent, infer, or embellish.
+
 ANTI-HALLUCINATION RULES (non-negotiable):
-- Only state facts that appear directly in the property details above — do not invent or infer anything
-- Never describe specific rooms or spaces unless the agent explicitly mentioned them in the highlights
-- Never say "practically every room", "throughout the home", "from every angle", or any claim about views from specific rooms unless stated
-- Never invent lifestyle scenarios (travel, weekend markets, morning routines) unless the agent wrote them in the highlights
+- Only state facts that appear directly in the property details above
+- Never describe specific rooms unless explicitly mentioned in the highlights
+- Never say "practically every room", "throughout the home", "from every angle", or similar
+- Never invent lifestyle scenarios unless the agent wrote them in the highlights
 - Never make assumptions about the buyer's life, relationship status, or lifestyle
-- Never write from a first-person agent opinion ("I would buy this myself", "this one is special to me")
-- If a feature was not mentioned in the form data, do not mention it
+- Never write from first-person agent opinion ("I would buy this", "this one is special")
+- If a feature was not in the form data, do not mention it
 
 WRITING RULES:
-- Never start with dramatic weather, sunrise, or sensory scene-setting
-- Never use: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world", or similar AI-sounding phrases
-- No casual or salesy phrases like "you know what the numbers look like" or "trust me on this one"
-- Start with a direct statement about the property or a simple, specific question
-- Write like a seasoned professional agent — confident and factual, not personal or salesy
-- Keep the intro to 3–4 sentences max, every sentence grounded in the form data provided
-- End with a simple, direct CTA using "${form.cta}" — no dramatic closing line
-- Hashtags: 15 max, mix of local and property-specific tags only — no generic ones like #DreamHome or #DreamHomeGoals
+- Never open with weather, sunrise, or scene-setting
+- Banned words/phrases: "nestled", "stunning", "breathtaking", "dream home", "luxury lifestyle", "the life you've been chasing", "changes the way you move through the world"
+- No salesy filler: "you know what the numbers look like", "trust me on this one"
+- Confident and factual — the facts should do the selling, not the adjectives
+- End with a simple, direct CTA using "${form.cta}" — no closing flourish
+- Hashtags: 15 max, local and property-specific only — no generic tags like #DreamHome
 
-BULLET POINT RULES (strict):
-- First bullet is ALWAYS a stats line combining all key numbers in one line, like this:
+BULLET POINT RULES:
+- First bullet is ALWAYS the stats line with all key numbers:
   🏡 4 BD / 3 BA | 2,400 sq ft | Built 2018 | $1,250,000
   Only include stats that were provided. Use the correct currency and area unit.
-- Then 4–6 additional bullets that are SHORT (8 words max each), factual, and specific
-- Good bullet examples: "🌊 Corner unit with ocean and city views" / "🏊 Private pool and terrace" / "📍 Steps from Brickell City Centre"
-- Bad bullet examples: "✨ Your personal resort awaits" / "🛋️ Say yes to the wardrobe you deserve"
-- Only bullet features that were explicitly provided in the form — no invented amenities
-- Bullets read like a checklist — not a poem
+- Then 4–6 bullets: one fact per bullet, max 8 words, from the amenities and highlights provided only
+- Choose the emoji that matches the actual feature — do not use a rooftop emoji if there's no rooftop
+- Good: "🌊 Direct ocean view from living area" / "🏊 Private rooftop pool" / "📍 Walking distance to Brickell City Centre"
+- Bad: "✨ Your personal resort awaits" / "🛋️ Space to grow into"
+- Only list amenities the agent selected or wrote — nothing invented
 
 FORMAT (output exactly this, no section labels):
-[opening line + body paragraph]
+[2–3 sentence intro]
 
 [stats bullet + 4–6 fact bullets]
 
